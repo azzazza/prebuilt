@@ -1,0 +1,21 @@
+#!/system/bin/sh
+
+export PATH=/sbin:/system/sbin:/system/bin:/system/xbin
+
+INITDIR="/system/etc/init.d"      # Директория init.d
+LOGSDIR="/data/init.d_logs"      # Директория куда будут записываться логи
+
+rm -rf $LOGSDIR      # очистка директории логов
+
+mkdir -p $LOGSDIR      # создание директории логов.
+#chmod -R 755 $INITDIR      # Присвоение разрешений на выполнение (если убрать, то скрипты без атрибутов "выполнение" запускаться не будут)
+
+cd "$INITDIR"      # Переход в директорию со скриптами
+
+for scripts in ./*
+do
+	    if [ -x $scripts ]      # Запускать скрипт только если он исполняемый
+	    then
+	    	    sh -x "$scripts" >"$LOGSDIR/$scripts.log" 2>&1 &      # Одновременное выполнение всех скриптов
+	    fi
+done
